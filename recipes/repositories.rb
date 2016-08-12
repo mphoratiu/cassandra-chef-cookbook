@@ -33,6 +33,8 @@ when 'debian'
   apt_repository node['cassandra']['apt']['repo'] do
     if node['cassandra']['dse']
       uri "https://#{dse_credentials['username']}:#{dse_credentials['password']}@debian.datastax.com/enterprise"
+    elsif node['cassandra']['ddc']
+      uri node['cassandra']['apt']['ddc_uri']
     else
       uri node['cassandra']['apt']['uri']
     end

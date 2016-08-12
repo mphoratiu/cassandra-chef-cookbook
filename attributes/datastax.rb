@@ -12,6 +12,11 @@ default['cassandra']['yum']['enabled'] = true
 default['cassandra']['yum']['options'] = ''
 default['cassandra']['yum']['action'] = :create
 
+default['cassandra']['apt']['ddc'] = false
+default['cassandra']['apt']['package_name'] = 'cassandra'
+default['cassandra']['ddc-version'] = '3.7.0'
+default['cassandra']['ddc-release'] = ''
+default['cassandra']['apt']['ddc_uri'] = 'https://debian.datastax.com/datastax-ddc/' # for ddc (not dsc or dse)
 default['cassandra']['apt']['repo'] = 'datastax'
 default['cassandra']['apt']['uri'] = 'https://debian.datastax.com/community/' # for dsc (not dse)
 default['cassandra']['apt']['distribution'] = 'stable'

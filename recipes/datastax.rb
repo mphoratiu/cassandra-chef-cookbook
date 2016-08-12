@@ -56,6 +56,14 @@ node.default['cassandra']['data_dir'] = data_dir
 node.default['cassandra']['commitlog_dir'] = ::File.join(node['cassandra']['root_dir'], 'commitlog')
 node.default['cassandra']['saved_caches_dir'] = ::File.join(node['cassandra']['root_dir'], 'saved_caches')
 
+  if node['cassandra']['ddc']
+    node.default['cassandra']['package_name'] = 'datastax-ddc'
+    node.default['cassandra']['apt']['package_name'] = 'datastax-ddc'
+    node.default['cassandra']['version'] = node['cassandra']['ddc-version']
+    node.default['cassandra']['release'] = node['cassandra']['ddc-release']
+    node.default['cassandra']['apt']['distribution'] = node['cassandra']['ddc-version'].split('.')[0..1].join('.')
+  end
+
 include_recipe 'cassandra-dse::user'
 include_recipe 'cassandra-dse::repositories'
 
@@ -81,14 +89,16 @@ when 'debian'
       pin_priority '700'
     end
 
-    apt_preference 'cassandra' do
+    apt_preference node['cassandra']['apt']['package_name'] do
       pin "version #{node['cassandra']['version']}"
       pin_priority '700'
     end
 
-    package 'cassandra' do
-      options '--force-yes -o Dpkg::Options::="--force-confold"'
-      version node['cassandra']['version']
+    unless node['cassandra']['ddc']
+      package node['cassandra']['apt']['package_name'] do
+        options '--force-yes -o Dpkg::Options::="--force-confold"'
+        version node['cassandra']['version']
+      end
     end
   end
 
