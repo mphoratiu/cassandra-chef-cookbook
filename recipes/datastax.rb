@@ -44,6 +44,22 @@ node.default['cassandra']['lib_dir'] = ::File.join(node['cassandra']['installati
 # For example if you want to connect 4 EBS disks as a JBOD slices the names will be in the following format: data1,data2,data3,data4
 # cassandra.yaml.erb will generate automatically entry per data_dir location
 
+# If Cassandra is installed do not upgrade it unless node['cassandra']['dont_upgrade'] is false
+if node['cassandra']['dont_upgrade']
+  case node['platform_family']
+  when 'debian'
+    if "dpkg-query -W #{node['cassandra']['apt']['package_name']}"
+      Chef::Log.info("Not upgrading '#{node['cassandra']['apt']['package_name']}'. If you are sure you want to upgrade it, set node['cassandra']['dont_upgrade'] to false.")
+      return
+    end
+  when 'rhel'
+    if "yum list installed #{node['cassandra']['apt']['package_name']}"
+      Chef::Log.info("Not upgrading '#{node['cassandra']['package_name']}' since is locked. If you are sure you want to upgrade it, set node['cassandra']['dont_upgrade'] to false.")
+      return
+    end
+  end
+end
+
 data_dir = []
 if !node['cassandra']['jbod']['slices'].nil?
   node['cassandra']['jbod']['slices'].times do |slice_number|

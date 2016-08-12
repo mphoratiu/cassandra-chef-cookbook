@@ -1,11 +1,16 @@
+## Changes Between 4.2.0 and 4.2.2 (unreleased)
+
+Added support for installing datastax-ddc packages
+Added extra attribute to help avoiding accidental upgrades.
+
 ## Changes Between 4.1.0 and 4.2.0 (unreleased)
 
 ### Java 8 JVM Tuning options
 
-A number of tuning options have been added to the cookbook to provide more 
+A number of tuning options have been added to the cookbook to provide more
 knobs to control performance in the JVM. This work is centered around the
 use-case of Oracle JDK 8 with the G1 GC.
- 
+
 Contributed by Matthew Silvey
 
 ## Changes Between 4.0.0 and 4.1.0 (Dec 28, 2015)
