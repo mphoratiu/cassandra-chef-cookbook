@@ -97,7 +97,9 @@ if node['cassandra']['version'][0..2] >= '2.1'
 
     end
   end
+end
 
+if node['cassandra']['version'][0..2] >= '3.0'
   # on DSC3, setting hints, required configuration
   node.default['cassandra']['config']['hints_directory'] = \
     ::File.join(node['cassandra']['root_dir'], 'hints')
