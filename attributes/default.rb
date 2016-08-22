@@ -39,6 +39,9 @@ default['cassandra']['templates_cookbook'] = 'cassandra-dse'
 
 default['cassandra']['root_dir'] = '/var/lib/cassandra' # data/ subdir added to this root
 default['cassandra']['log_dir'] = '/var/log/cassandra'
+default['cassandra']['commitlog_dir'] = '/var/lib/cassandra/commitlog'
+default['cassandra']['saved_caches_dir'] = '/var/lib/cassandra/saved_caches'
+default['cassandra']['conf_dir'] = '/etc/cassandra'
 default['cassandra']['rootlogger'] = 'INFO,stdout,R'
 
 # Seed node discovery
