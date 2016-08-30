@@ -227,12 +227,14 @@ JVM_OPTS="$JVM_OPTS -Xmx${MAX_HEAP_SIZE}"
 <% end -%>
 
 # -Xmn
+<% unless node['cassandra']['jvm']['g1'] -%>
 <% if node['cassandra']['jvm'] && node['cassandra']['jvm']['xmn'] -%>
 # (set via node['cassandra']['jvm']['xmn'])
 JVM_OPTS="$JVM_OPTS -Xmn<%= node['cassandra']['jvm']['xmn'] %>"
 <% else -%>
 # (set via node['cassandra']['heap_new_size'])
 JVM_OPTS="$JVM_OPTS -Xmn${HEAP_NEWSIZE}"
+<% end -%>
 <% end -%>
 
 <% if node['cassandra']['heap_dump'] -%>
