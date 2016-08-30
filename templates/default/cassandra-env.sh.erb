@@ -146,6 +146,16 @@ HEAP_NEWSIZE="<%= node['cassandra']['heap_new_size'] %>"
 #HEAP_NEWSIZE="800M"
 <% end %>
 
+# Set Concurrent GC threads
+<% if node['cassandra']['jvm']['conc_gc_threads'] %>
+CONC_GC_THREADS=<%= node['cassandra']['jvm']['conc_gc_threads'] %>
+<% end %>
+
+# Set Parallel GC threads
+<% if node['cassandra']['jvm']['parallel_gc_threads'] %>
+PARALLEL_GC_THREADS=<%= node['cassandra']['jvm']['parallel_gc_threads'] %>
+<% end %>
+
 # Set this to control the amount of arenas per-thread in glibc
 #MALLOC_ARENA_MAX=4
 
@@ -306,10 +316,14 @@ JVM_OPTS="$JVM_OPTS -XX:-ParallelRefProcEnabled"
 
 <% if node['cassandra']['jvm']['max_parallel_gc_threads'] -%>
 JVM_OPTS="$JVM_OPTS -XX:ParallelGCThreads=$system_cpu_cores"
+<% elsif node['cassandra']['jvm']['parallel_gc_threads'] -%>
+JVM_OPTS="$JVM_OPTS -XX:ParallelGCThreads=$PARALLEL_GC_THREADS"
 <% end -%>
 
 <% if node['cassandra']['jvm']['max_conc_gc_threads'] -%>
 JVM_OPTS="$JVM_OPTS -XX:ConcGCThreads=$system_cpu_cores"
+<% elsif node['cassandra']['jvm']['conc_gc_threads'] -%>
+JVM_OPTS="$JVM_OPTS -XX:ConcGCThreads=$CONC_GC_THREADS"
 <% end -%>
 
 <% if node['cassandra']['jvm']['always_pre_touch'] -%>
