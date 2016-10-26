@@ -1,6 +1,8 @@
 
 default['cassandra']['package_name']  = 'dsc22'
 default['cassandra']['tools_package_name'] = 'python-cql'
+default['cassandra']['no_cassandra-tools_install'] = false
+default['cassandra']['cassandra-tools_name'] = 'cassandra-tools'
 default['cassandra']['release']       = '1'
 default['cassandra']['dont_upgrade']  = true
 

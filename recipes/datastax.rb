@@ -48,12 +48,12 @@ node.default['cassandra']['lib_dir'] = ::File.join(node['cassandra']['installati
 if node['cassandra']['dont_upgrade']
   case node['platform_family']
   when 'debian'
-    if "dpkg-query -W #{node['cassandra']['apt']['package_name']}"
+    if system("dpkg-query -W #{node['cassandra']['apt']['package_name']}")
       Chef::Log.info("Not upgrading '#{node['cassandra']['apt']['package_name']}'. If you are sure you want to upgrade it, set node['cassandra']['dont_upgrade'] to false.")
       return
     end
   when 'rhel'
-    if "yum list installed #{node['cassandra']['apt']['package_name']}"
+    if system("yum list installed #{node['cassandra']['apt']['package_name']}")
       Chef::Log.info("Not upgrading '#{node['cassandra']['package_name']}' since is locked. If you are sure you want to upgrade it, set node['cassandra']['dont_upgrade'] to false.")
       return
     end
@@ -75,6 +75,13 @@ node.default['cassandra']['saved_caches_dir'] = ::File.join(node['cassandra']['r
   if node['cassandra']['ddc']
     node.default['cassandra']['package_name'] = 'datastax-ddc'
     node.default['cassandra']['apt']['package_name'] = 'datastax-ddc'
+    case node['platform_family']
+    when 'debian'
+      node.default['cassandra']['cassandra-tools_name'] = 'cassandra-tools'
+    when 'rhel'
+      big_version = node['cassandra']['version'].split('.').join[0..1]
+      node.default['cassandra']['cassandra-tools_name'] = "cassandra#{big_version}-tools"
+    end
     node.default['cassandra']['version'] = node['cassandra']['ddc-version']
     node.default['cassandra']['release'] = node['cassandra']['ddc-release']
     node.default['cassandra']['apt']['distribution'] = node['cassandra']['ddc-version'].split('.')[0..1].join('.')
@@ -131,6 +138,13 @@ when 'debian'
     notifies :run, 'ruby_block[set_fd_limit]', :immediately
     notifies :run, 'execute[set_cluster_name]', :immediately
     action :install
+  end
+
+  # cassandra-tools install
+  package node['cassandra']['cassandra-tools_name'] do
+    options '--force-yes -o Dpkg::Options::="--force-confold"'
+    version node['cassandra']['version']
+    action :nothing if node['cassandra']['no_cassandra-tools_install']
   end
 
   ruby_block 'sleep30s' do
